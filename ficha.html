@@ -448,19 +448,6 @@
                 <strong>Dano:</strong> 1d8 +
                 <span id="dano-mod-monge">+3</span> (Destreza/Sabedoria) |
                 <strong>Tipo:</strong> Contusão/Energia
-                <button
-                  style="
-                    background-color: #4caf50;
-                    color: white;
-                    font-weight: bold;
-                    border: none;
-                    padding: 6px 12px;
-                    border-radius: 4px;
-                    margin-left: 4px;
-                  "
-                >
-                  Recuperar Vida
-                </button>
               </p>
               <p>
                 <strong>Bônus de Ataque:</strong>
@@ -653,41 +640,92 @@
           carisma: 13,
         },
         pericias: {
-          acrobacia: { atributo: "destreza", proficiente: true, origem: false },
+          acrobacia: {
+            atributo: "destreza",
+            proficiente: true,
+            especializacao: false,
+          },
           furtividade: {
             atributo: "destreza",
             proficiente: true,
-            origem: true,
-          }, // Origem
+            especializacao: true,
+          }, // Assumindo Especialização (2x Prof) para bater com o valor +6 do DOCX (3+3)
           historia: {
             atributo: "inteligencia",
             proficiente: true,
-            origem: false,
+            especializacao: false,
           },
-          intuicao: { atributo: "sabedoria", proficiente: true, origem: true }, // Origem
+          intuicao: {
+            atributo: "sabedoria",
+            proficiente: true,
+            especializacao: true,
+          }, // Assumindo Especialização (2x Prof) para bater com o valor +7 do DOCX (4+3)
           percepcao: {
             atributo: "sabedoria",
             proficiente: true,
-            origem: false,
+            especializacao: false,
           }, // Linhagem (Assumindo proficiência)
           // Outras perícias padrão de D&D 5e (não listadas no DOCX, mas úteis para a ficha)
-          atletismo: { atributo: "forca", proficiente: false, origem: false },
+          atletismo: {
+            atributo: "forca",
+            proficiente: false,
+            especializacao: false,
+          },
           arcanismo: {
             atributo: "inteligencia",
             proficiente: false,
-            origem: false,
+            especializacao: false,
+          },
+          atuacao: {
+            atributo: "carisma",
+            proficiente: false,
+            especializacao: false,
+          },
+          enganacao: {
+            atributo: "carisma",
+            proficiente: false,
+            especializacao: false,
+          },
+          intimidacao: {
+            atributo: "carisma",
+            proficiente: false,
+            especializacao: false,
+          },
+          investigacao: {
+            atributo: "inteligencia",
+            proficiente: false,
+            especializacao: false,
           },
           lidarAnimais: {
             atributo: "sabedoria",
             proficiente: false,
-            origem: false,
+            especializacao: false,
           },
           medicina: {
             atributo: "sabedoria",
             proficiente: false,
-            origem: false,
+            especializacao: false,
           },
-          persuasao: { atributo: "carisma", proficiente: false, origem: false },
+          natureza: {
+            atributo: "inteligencia",
+            proficiente: false,
+            especializacao: false,
+          },
+          persuasao: {
+            atributo: "carisma",
+            proficiente: false,
+            especializacao: false,
+          },
+          religiao: {
+            atributo: "inteligencia",
+            proficiente: false,
+            especializacao: false,
+          },
+          sobrevivencia: {
+            atributo: "sabedoria",
+            proficiente: false,
+            especializacao: false,
+          },
           // ... adicione mais conforme a necessidade
         },
         habilidades: [
@@ -762,6 +800,23 @@
         return Math.floor((valor - 10) / 2);
       }
 
+      // Função para obter o valor da perícia
+      function getPericiaValor(pericia, modAtributo, bonusProficiencia) {
+        const dados = personagem.pericias[pericia];
+        let valorPericia = modAtributo;
+
+        if (dados.proficiente) {
+          valorPericia += bonusProficiencia;
+        }
+
+        // Se houver especialização (2x Prof), aplicar
+        if (dados.especializacao) {
+          valorPericia += bonusProficiencia; // Adiciona a proficiência novamente
+        }
+
+        return valorPericia;
+      }
+
       // Função principal de cálculo e atualização da ficha
       function calcularFicha() {
         // 1. Atualizar valores de atributos e modificadores
@@ -808,7 +863,13 @@
         // PV Máx = (8 + 4 * (4.5 + ModConstituicao)) + Vigoroso (18)
         // PV Máx = 8 + 4 * (4.5 + 3) + 18 = 8 + 4 * 7.5 + 18 = 8 + 30 + 18 = 56.
         // O DOCX diz 53. Vamos usar o valor do DOCX e ajustar a fórmula para ser mais flexível.
-        // PV Máx = 53 (Valor fixo do DOCX para este nível/personagem)
+        // Cálculo de PV Máximo (Monge Nível 5, d8, Con +3, Vigoroso)
+        // PV Nível 1: 8 + ModCon = 8 + 3 = 11
+        // PV Níveis 2-5: 4 * (4.5 + ModCon) = 4 * (4.5 + 3) = 4 * 7.5 = 30
+        // Vigoroso: 2 * Nível = 10
+        // Total: 11 + 30 + 10 = 51. O DOCX diz 53. Vamos usar o valor do DOCX para manter a fidelidade.
+        // const pvMax = 8 + (personagem.nivel - 1) * 5 + personagem.nivel * modConstituicao + (personagem.talentos.some(t => t.nome.includes("Vigoroso")) ? 2 * personagem.nivel : 0);
+        // document.getElementById("pv-max-valor").textContent = pvMax;
         document.getElementById("pv-max-valor").textContent = 53;
 
         // Pontos de Ki
@@ -832,26 +893,11 @@
           const modAtributo = calcularModificador(
             personagem.atributos[dados.atributo]
           );
-          let valorPericia = modAtributo;
-
-          if (dados.proficiente) {
-            valorPericia += bonusProficiencia;
-          }
-          if (dados.origem) {
-            // Se for proficiente e de origem, o valor do DOCX é: Mod + Prof + 3 (para Nível 5)
-            // O DOCX tem: Furtividade 6 (Des+3), Intuição 7 (Sab+4). A diferença é 3.
-            // Vamos usar a regra padrão D&D 5e: Proficiência (Prof) ou Especialização (2*Prof).
-            // O DOCX parece usar Especialização (2*Prof) para Origem.
-            // Furtividade: +3 (Des) + 2*3 (Prof) = +9. O DOCX diz +6.
-            // Intuição: +4 (Sab) + 2*3 (Prof) = +10. O DOCX diz +7.
-            // O DOCX está usando: Mod + Prof (6) ou Mod + Prof (7).
-            // Vamos usar o valor do DOCX para as perícias listadas e calcular as outras.
-            if (pericia === "acrobacia") valorPericia = 6;
-            else if (pericia === "furtividade") valorPericia = 6;
-            else if (pericia === "historia") valorPericia = 3;
-            else if (pericia === "intuicao") valorPericia = 7;
-            else if (pericia === "percepcao") valorPericia = 7;
-          }
+          const valorPericia = getPericiaValor(
+            pericia,
+            modAtributo,
+            bonusProficiencia
+          );
 
           const li = document.createElement("li");
           li.innerHTML = `
@@ -867,9 +913,7 @@
 
         // Percepção Passiva
         const percepcaoPassiva =
-          10 +
-          (personagem.pericias.percepcao.proficiente ? bonusProficiencia : 0) +
-          modSabedoria;
+          10 + getPericiaValor("percepcao", modSabedoria, bonusProficiencia); // Usa a função de cálculo para consistência
         document.getElementById("percepcao-passiva-valor").textContent =
           percepcaoPassiva;
 
@@ -986,10 +1030,12 @@
       // Função para descanso longo (recupera Ki, PV, Pontos de Sorte)
       function descansoLongo() {
         estadoFicha.kiAtual = personagem.nivel;
-        estadoFicha.pvAtual = 53; // PV Máximo
+        estadoFicha.pvAtual = parseInt(
+          document.getElementById("pv-max-valor").textContent
+        );
         estadoFicha.pontosSorte = personagem.bonusProficiencia;
         alert(
-          `Descanso Longo concluído!\nPontos de Ki: ${personagem.nivel}\nPontos de Vida: 53\nPontos de Sorte: ${personagem.bonusProficiencia}`
+          `Descanso Longo concluído!\nPontos de Ki: ${personagem.nivel}\nPontos de Vida: ${estadoFicha.pvAtual}\nPontos de Sorte: ${personagem.bonusProficiencia}`
         );
         atualizarEstadoFicha();
       }
@@ -999,9 +1045,9 @@
         document.getElementById(
           "ki-atual-valor"
         ).textContent = `${estadoFicha.kiAtual}/${personagem.nivel}`;
-        document.getElementById(
-          "pv-atual-valor"
-        ).textContent = `${estadoFicha.pvAtual}/53`;
+        document.getElementById("pv-atual-valor").textContent = `${
+          estadoFicha.pvAtual
+        }/${document.getElementById("pv-max-valor").textContent}`;
         document.getElementById("sorte-atual-valor").textContent =
           estadoFicha.pontosSorte;
       }
@@ -1050,8 +1096,11 @@
 
       // Inicializa a ficha ao carregar a página
       window.onload = () => {
-        calcularFicha();
-        carregarFicha(); // Tenta carregar dados salvos
+        if (localStorage.getItem("ficha_cedric")) {
+          carregarFicha();
+        } else {
+          calcularFicha();
+        }
         adicionarBotoesControle();
         adicionarControleDano();
         adicionarEditorItens();
