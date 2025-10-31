@@ -448,6 +448,19 @@
                 <strong>Dano:</strong> 1d8 +
                 <span id="dano-mod-monge">+3</span> (Destreza/Sabedoria) |
                 <strong>Tipo:</strong> Contusão/Energia
+                <button
+                  style="
+                    background-color: #4caf50;
+                    color: white;
+                    font-weight: bold;
+                    border: none;
+                    padding: 6px 12px;
+                    border-radius: 4px;
+                    margin-left: 4px;
+                  "
+                >
+                  Recuperar Vida
+                </button>
               </p>
               <p>
                 <strong>Bônus de Ataque:</strong>
@@ -1154,6 +1167,31 @@
 
         form.appendChild(input);
         form.appendChild(btn);
+        // Botão Recuperar Vida
+        const btnRecuperar = document.createElement("button");
+        btnRecuperar.type = "button";
+        btnRecuperar.textContent = "Recuperar Vida";
+        btnRecuperar.style.backgroundColor = "#4caf50";
+        btnRecuperar.style.color = "white";
+        btnRecuperar.style.border = "none";
+        btnRecuperar.style.borderRadius = "4px";
+        btnRecuperar.style.padding = "4px 10px";
+        btnRecuperar.style.cursor = "pointer";
+        btnRecuperar.style.fontWeight = "bold";
+        btnRecuperar.onclick = function () {
+          const input = form.querySelector("input");
+          let cura = parseInt(input.value);
+          if (isNaN(cura) || cura <= 0) {
+            alert("Informe um valor de vida para recuperar.");
+            return;
+          }
+          // Corrige para usar PV máximo fixo (53)
+          estadoFicha.pvAtual = Math.min(53, estadoFicha.pvAtual + cura);
+          atualizarEstadoFicha();
+          alert(`Vida recuperada! PV atual: ${estadoFicha.pvAtual}`);
+          input.value = "";
+        };
+        form.appendChild(btnRecuperar);
         secaoEstado.appendChild(form);
       }
     </script>
