@@ -979,8 +979,95 @@
         carregarFicha(); // Tenta carregar dados salvos
         adicionarBotoesControle();
         adicionarControleDano();
+        adicionarEditorItens();
         atualizarEstadoFicha();
       };
+      // Função para adicionar editor de itens
+      function adicionarEditorItens() {
+        const lista = document.getElementById("lista-equipamentos");
+        if (!lista) return;
+
+        // Carregar itens do personagem, se existir
+        if (!personagem.itens) {
+          personagem.itens = [];
+          // Preenche com os itens do HTML, se não houver ainda
+          lista.querySelectorAll("li").forEach((li) => {
+            personagem.itens.push(li.textContent.trim());
+          });
+        }
+
+        // Renderiza a lista editável
+        function renderizarItens() {
+          lista.innerHTML = "";
+          personagem.itens.forEach((item, idx) => {
+            const li = document.createElement("li");
+            const input = document.createElement("input");
+            input.type = "text";
+            input.value = item;
+            input.style.width = "70%";
+            input.style.marginRight = "6px";
+            input.onchange = () => {
+              personagem.itens[idx] = input.value;
+              salvarFicha();
+            };
+            const btnRemover = document.createElement("button");
+            btnRemover.textContent = "🗑️";
+            btnRemover.title = "Remover";
+            btnRemover.style.marginLeft = "4px";
+            btnRemover.style.background = "none";
+            btnRemover.style.border = "none";
+            btnRemover.style.cursor = "pointer";
+            btnRemover.onclick = () => {
+              personagem.itens.splice(idx, 1);
+              renderizarItens();
+              salvarFicha();
+            };
+            li.appendChild(input);
+            li.appendChild(btnRemover);
+            lista.appendChild(li);
+          });
+        }
+
+        // Formulário para adicionar novo item
+        const form = document.createElement("form");
+        form.style.display = "flex";
+        form.style.gap = "6px";
+        form.style.marginTop = "8px";
+        form.onsubmit = function (e) {
+          e.preventDefault();
+          const input = form.querySelector("input");
+          const novoItem = input.value.trim();
+          if (novoItem) {
+            personagem.itens.push(novoItem);
+            renderizarItens();
+            salvarFicha();
+            input.value = "";
+          }
+        };
+        const inputNovo = document.createElement("input");
+        inputNovo.type = "text";
+        inputNovo.placeholder = "Novo item";
+        inputNovo.style.flex = "1";
+        inputNovo.style.borderRadius = "4px";
+        inputNovo.style.border = "1px solid var(--cor-borda)";
+        inputNovo.style.padding = "4px";
+        const btnAdd = document.createElement("button");
+        btnAdd.type = "submit";
+        btnAdd.textContent = "Adicionar";
+        btnAdd.style.backgroundColor = "var(--cor-principal)";
+        btnAdd.style.color = "white";
+        btnAdd.style.border = "none";
+        btnAdd.style.borderRadius = "4px";
+        btnAdd.style.padding = "4px 10px";
+        btnAdd.style.cursor = "pointer";
+        btnAdd.style.fontWeight = "bold";
+        form.appendChild(inputNovo);
+        form.appendChild(btnAdd);
+
+        // Adiciona o formulário e renderiza
+        lista.parentElement.appendChild(form);
+        renderizarItens();
+      }
 
       // Função para adicionar botões de controle
       function adicionarBotoesControle() {
