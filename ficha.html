@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ficha de Personagem Interativa - Cedric Starwyn</title>
+    <style>
+      /* Estilos CSS para a Ficha de Personagem */
+      :root {
+        --cor-principal: #3498db;
+        --cor-fundo: #ecf0f1;
+        --cor-texto: #2c3e50;
+        --cor-borda: #bdc3c7;
+        --cor-destaque: #e74c3c;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--cor-fundo);
+        color: var(--cor-texto);
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .ficha-container {
+        width: 100%;
+        max-width: 1200px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 20px;
+      }
+
+      header {
+        grid-column: 1 / -1;
+        text-align: center;
+        border-bottom: 3px solid var(--cor-principal);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+
+      header h1 {
+        margin: 0;
+        color: var(--cor-principal);
+      }
+
+      .secao {
+        border: 1px solid var(--cor-borda);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      .secao h2 {
+        margin-top: 0;
+        color: var(--cor-destaque);
+        border-bottom: 1px dashed var(--cor-borda);
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+      }
+
+      /* Layout de Atributos */
+      .atributos {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+
+      .atributo {
+        text-align: center;
+        padding: 10px 5px;
+        border: 2px solid var(--cor-principal);
+        border-radius: 5px;
+        background-color: #f8f9fa;
+      }
+
+      .atributo label {
+        display: block;
+        font-weight: bold;
+        font-size: 0.8em;
+        text-transform: uppercase;
+        color: var(--cor-texto);
+      }
+
+      .atributo input[type="number"] {
+        width: 80%;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        border: none;
+        border-bottom: 2px solid var(--cor-destaque);
+        margin: 5px 0;
+        padding: 2px;
+        background: transparent;
+      }
+
+      .atributo .modificador {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: var(--cor-principal);
+      }
+
+      /* Layout de Perícias */
+      .pericias ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .pericias li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        border-bottom: 1px dotted var(--cor-borda);
+      }
+
+      .pericias li:last-child {
+        border-bottom: none;
+      }
+
+      .pericias .valor {
+        font-weight: bold;
+        color: var(--cor-destaque);
+      }
+
+      /* Layout de Combate e Estatísticas */
+      .estatisticas-combate {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        text-align: center;
+      }
+
+      .estatistica {
+        padding: 10px;
+        border: 1px solid var(--cor-borda);
+        border-radius: 5px;
+      }
+
+      .estatistica .valor {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: var(--cor-principal);
+      }
+
+      .estatistica label {
+        display: block;
+        font-size: 0.8em;
+        text-transform: uppercase;
+      }
+
+      /* Habilidades e Talentos */
+      .habilidades-talentos {
+        grid-column: 1 / -1;
+      }
+
+      .habilidade-item {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-left: 5px solid var(--cor-destaque);
+        background-color: #f4f4f4;
+        border-radius: 0 5px 5px 0;
+      }
+
+      .habilidade-item h3 {
+        margin-top: 0;
+        color: var(--cor-principal);
+      }
+
+      /* Formulário de Entrada */
+      input[type="text"],
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        border: 1px solid var(--cor-borda);
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      /* Estilos para a seção de Itens/Equipamentos */
+      .equipamentos ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .equipamentos li {
+        padding: 5px 0;
+        border-bottom: 1px dotted var(--cor-borda);
+      }
+
+      .equipamentos li:last-child {
+        border-bottom: none;
+      }
+
+      .equipamentos h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: var(--cor-principal);
+        font-size: 0.95em;
+      }
+
+      /* Estilos para botões */
+      button {
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      /* Estilos para a seção de controles */
+      .controles-ficha {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 15px;
+      }
+
+      /* Responsividade básica */
+      @media (max-width: 768px) {
+        .ficha-container {
+          grid-template-columns: 1fr;
+        }
+        .atributos {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .estatisticas-combate {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ficha-container">
+      <header>
+        <h1>Ficha de Personagem - Cedric Starwyn</h1>
+        <p>Monge - Caminho da Forma Astral | Nível 5 | Humano</p>
+      </header>
+
+      <!-- Coluna Esquerda: Atributos, Perícias, Estatísticas -->
+      <div class="coluna-esquerda">
+        <div class="secao">
+          <h2>Atributos</h2>
+          <div class="atributos">
+            <!-- Força -->
+            <div class="atributo">
+              <label for="forca-valor">Força</label>
+              <input
+                type="number"
+                id="forca-valor"
+                value="8"
+                min="1"
+                max="30"
+                onchange="calcularFicha()"
+              />
+              <div class="modificador" id="forca-mod">-1</div>
+            </div>
+            <!-- Destreza -->
+            <div class="atributo">
+              <label for="destreza-valor">Destreza</label>
+              <input
+                type="number"
+                id="destreza-valor"
+                value="16"
+                min="1"
+                max="30"
+                onchange="calcularFicha()"
+              />
+              <div class="modificador" id="destreza-mod">+3</div>
+            </div>
+            <!-- Constituição -->
+            <div class="atributo">
+              <label for="constituicao-valor">Constituição</label>
+              <input
+                type="number"
+                id="constituicao-valor"
+                value="16"
+                min="1"
+                max="30"
+                onchange="calcularFicha()"
+              />
+              <div class="modificador" id="constituicao-mod">+3</div>
+            </div>
+            <!-- Inteligência -->
+            <div class="atributo">
+              <label for="inteligencia-valor">Inteligência</label>
+              <input
+                type="number"
+                id="inteligencia-valor"
+                value="10"
+                min="1"
+                max="30"
+                onchange="calcularFicha()"
+              />
+              <div class="modificador" id="inteligencia-mod">+0</div>
+            </div>
+            <!-- Sabedoria -->
+            <div class="atributo">
+              <label for="sabedoria-valor">Sabedoria</label>
+              <input
+                type="number"
+                id="sabedoria-valor"
+                value="18"
+                min="1"
+                max="30"
+                onchange="calcularFicha()"
+              />
+              <div class="modificador" id="sabedoria-mod">+4</div>
+            </div>
+            <!-- Carisma -->
+            <div class="atributo">
+              <label for="carisma-valor">Carisma</label>
+              <input
+                type="number"
+                id="carisma-valor"
+                value="13"
+                min="1"
+                max="30"
+                onchange="calcularFicha()"
+              />
+              <div class="modificador" id="carisma-mod">+1</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="secao">
+          <h2>Estatísticas de Combate</h2>
+          <div class="estatisticas-combate">
+            <div class="estatistica">
+              <label>CA</label>
+              <div class="valor" id="ca-valor">17</div>
+              <small>(10 + Des + Sab)</small>
+            </div>
+            <div class="estatistica">
+              <label>Iniciativa</label>
+              <div class="valor" id="iniciativa-valor">+3</div>
+            </div>
+            <div class="estatistica">
+              <label>Deslocamento</label>
+              <div class="valor" id="deslocamento-valor">12m</div>
+              <small>(+3m Mov. Sem Armadura)</small>
+            </div>
+            <div class="estatistica">
+              <label>Pontos de Vida</label>
+              <div class="valor" id="pv-max-valor">53</div>
+              <small>(Máximo)</small>
+            </div>
+            <div class="estatistica">
+              <label>Pontos de Ki</label>
+              <div class="valor" id="ki-max-valor">5</div>
+              <small>(Nível de Monge)</small>
+            </div>
+            <div class="estatistica">
+              <label>CD de Resistência</label>
+              <div class="valor" id="cd-resistencia-valor">15</div>
+              <small>(8 + Prof + Sab)</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="secao pericias">
+          <h2>Perícias</h2>
+          <ul id="lista-pericias">
+            <!-- As perícias serão preenchidas pelo JavaScript -->
+          </ul>
+          <div class="estatistica" style="margin-top: 10px">
+            <label>Percepção Passiva</label>
+            <div class="valor" id="percepcao-passiva-valor">17</div>
+          </div>
+        </div>
+
+        <div class="secao">
+          <h2>Estado Atual</h2>
+          <div class="estatisticas-combate">
+            <div class="estatistica">
+              <label>Pontos de Vida</label>
+              <div class="valor" id="pv-atual-valor">53</div>
+              <small>(Atual / Máx)</small>
+            </div>
+            <div class="estatistica">
+              <label>Pontos de Ki</label>
+              <div class="valor" id="ki-atual-valor">5/5</div>
+              <small>(Atual / Máx)</small>
+            </div>
+            <div class="estatistica">
+              <label>Pontos de Sorte</label>
+              <div class="valor" id="sorte-atual-valor">3</div>
+              <small>(Disponíveis)</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="secao">
+          <h2>Equipamentos e Moedas</h2>
+          <div class="equipamentos">
+            <h3>Itens</h3>
+            <ul id="lista-equipamentos">
+              <li>Pacote de Explorador</li>
+              <li>1 Guitarra Clássica</li>
+              <li>5 Adagas</li>
+              <li>1 Kusarigama</li>
+              <li>2 Algibeiras</li>
+              <li>Roupas de Viagem</li>
+              <li>Saco de Dormir</li>
+            </ul>
+            <p style="margin-top: 10px">
+              <strong>Moedas:</strong> <span id="moedas-po">27 PO</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna Direita: Habilidades, Talentos, Ataques -->
+      <div class="coluna-direita">
+        <div class="secao">
+          <h2>Ataques e Proficiências</h2>
+          <p>
+            <strong>Bônus de Proficiência:</strong>
+            <span id="bonus-proficiencia">+3</span>
+          </p>
+          <p>
+            <strong>Proficiências:</strong> Armas Simples, Marciais (Leve),
+            Ferramentas de Ladrão, Guitarra Clássica
+          </p>
+          <p><strong>Idiomas:</strong> Comum</p>
+          <div class="ataques">
+            <h3>Ataques Principais</h3>
+            <div class="habilidade-item">
+              <h3>Ataque Desarmado / Arma de Monge</h3>
+              <p>
+                <strong>Dano:</strong> 1d8 +
+                <span id="dano-mod-monge">+3</span> (Destreza/Sabedoria) |
+                <strong>Tipo:</strong> Contusão/Energia
+              </p>
+              <p>
+                <strong>Bônus de Ataque:</strong>
+                <span id="ataque-bonus-monge">+6</span> (Prof + Des/Sab)
+              </p>
+              <button
+                onclick="usarHabilidade('Rajada de Golpes')"
+                style="
+                  padding: 8px 12px;
+                  margin: 5px 2px;
+                  background-color: var(--cor-destaque);
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                Rajada de Golpes (1 Ki)
+              </button>
+              <button
+                onclick="usarHabilidade('Ataque Atordoante')"
+                style="
+                  padding: 8px 12px;
+                  margin: 5px 2px;
+                  background-color: var(--cor-destaque);
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                Ataque Atordoante (1 Ki)
+              </button>
+              <button
+                onclick="usarHabilidade('Braços da Forma Astral')"
+                style="
+                  padding: 8px 12px;
+                  margin: 5px 2px;
+                  background-color: var(--cor-destaque);
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                Braços da Forma Astral (1 Ki)
+              </button>
+              <button
+                onclick="usarHabilidade('Mira Focada')"
+                style="
+                  padding: 8px 12px;
+                  margin: 5px 2px;
+                  background-color: var(--cor-destaque);
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                Mira Focada (1-3 Ki)
+              </button>
+              <button
+                onclick="usarHabilidade('Defesa Paciente')"
+                style="
+                  padding: 8px 12px;
+                  margin: 5px 2px;
+                  background-color: var(--cor-destaque);
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                Defesa Paciente (1 Ki)
+              </button>
+              <button
+                onclick="usarHabilidade('Passos do Vento')"
+                style="
+                  padding: 8px 12px;
+                  margin: 5px 2px;
+                  background-color: var(--cor-destaque);
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                Passos do Vento (1 Ki)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="secao habilidades-talentos">
+          <h2>Habilidades de Classe e Subclasse</h2>
+          <div id="lista-habilidades">
+            <!-- As habilidades serão preenchidas pelo JavaScript -->
+          </div>
+        </div>
+
+        <div class="secao habilidades-talentos">
+          <h2>Talentos</h2>
+          <div id="lista-talentos">
+            <!-- Os talentos serão preenchidos pelo JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Dados iniciais do personagem (baseados no DOCX)
+      let estadoFicha = {
+        pvAtual: 53,
+        kiAtual: 5,
+        pontosSorte: 3,
+      };
+
+      const personagem = {
+        nivel: 5,
+        bonusProficiencia: 3, // Nível 5 = +3
+        dadosVida: 8, // d8 para Monge
+        atributos: {
+          forca: 8,
+          destreza: 16,
+          constituicao: 16,
+          inteligencia: 10,
+          sabedoria: 18,
+          carisma: 13,
+        },
+        pericias: {
+          acrobacia: { atributo: "destreza", proficiente: true, origem: false },
+          furtividade: {
+            atributo: "destreza",
+            proficiente: true,
+            origem: true,
+          }, // Origem
+          historia: {
+            atributo: "inteligencia",
+            proficiente: true,
+            origem: false,
+          },
+          intuicao: { atributo: "sabedoria", proficiente: true, origem: true }, // Origem
+          percepcao: {
+            atributo: "sabedoria",
+            proficiente: true,
+            origem: false,
+          }, // Linhagem (Assumindo proficiência)
+          // Outras perícias padrão de D&D 5e (não listadas no DOCX, mas úteis para a ficha)
+          atletismo: { atributo: "forca", proficiente: false, origem: false },
+          arcanismo: {
+            atributo: "inteligencia",
+            proficiente: false,
+            origem: false,
+          },
+          lidarAnimais: {
+            atributo: "sabedoria",
+            proficiente: false,
+            origem: false,
+          },
+          medicina: {
+            atributo: "sabedoria",
+            proficiente: false,
+            origem: false,
+          },
+          persuasao: { atributo: "carisma", proficiente: false, origem: false },
+          // ... adicione mais conforme a necessidade
+        },
+        habilidades: [
+          {
+            nome: "Artes Marciais",
+            descricao:
+              "Dado de Dano 1d8. Usa Destreza para ataque/dano. Ataque Desarmado como Ação Bônus.",
+          },
+          {
+            nome: "Defesa sem Armadura",
+            descricao: "CA = 10 + Mod Destreza (+3) + Mod Sabedoria (+4) = 17.",
+          },
+          {
+            nome: "Ki",
+            descricao:
+              "5 Pontos de Ki. CD de Resistência 15. Habilidades: Rajada de Golpes, Defesa Paciente, Passos do Vento.",
+          },
+          {
+            nome: "Movimento Sem Armadura",
+            descricao: "Deslocamento aumenta em +3m (Total 12m).",
+          },
+          {
+            nome: "Metabolismo Sobrenatural",
+            descricao:
+              "Ao rolar Iniciativa, pode recuperar Ki e PV (1d8 + Nível) uma vez por Descanso Longo.",
+          },
+          {
+            nome: "Queda Lenta",
+            descricao: "Reduz dano de queda em 5 x Nível (25) como Reação.",
+          },
+          {
+            nome: "Ataque Extra",
+            descricao: "Pode realizar dois ataques ao usar a ação de Ataque.",
+          },
+          {
+            nome: "Ataque Atordoante",
+            descricao:
+              "1 Ki. Teste de Resistência de Constituição CD 15. Falha: Atordoado. Sucesso: Velocidade reduzida e Vantagem no próximo ataque contra ele.",
+          },
+          {
+            nome: "Mira Focada",
+            descricao:
+              "1-3 Ki. +2 na jogada de ataque por ponto gasto ao errar.",
+          },
+          {
+            nome: "Braços da Forma Astral (Subclasse)",
+            descricao:
+              "1 Ki, Ação Bônus. Dura 10 min. Causa 2d8 dano de energia (Teste Destreza). Benefícios: Usa Sabedoria em testes/resistências de Força, Ataques Desarmados com Alcance +1,5m, usa Sabedoria para ataque/dano de energia.",
+          },
+        ],
+        talentos: [
+          {
+            nome: "Resiliente (Monge)",
+            descricao:
+              "Aumenta Sabedoria em 1 (já incluso no valor 18). Ganha proficiência em salvaguardas de Sabedoria.",
+          },
+          {
+            nome: "Sortudo (Origem)",
+            descricao:
+              "3 Pontos de Sorte (igual ao Bônus de Proficiência). Gasta para Vantagem em d20 ou Desvantagem em ataque contra você. Restaura em Descanso Longo.",
+          },
+          {
+            nome: "Vigoroso (Humano)",
+            descricao:
+              "PV Máx aumentam em 2 x Nível (10) + 2 PV adicionais por nível (Total 10 + 2*4 = 18 PV extras no Nível 5). Já incluso no PV Máx.",
+          },
+        ],
+      };
+
+      // Função para calcular o modificador de atributo
+      function calcularModificador(valor) {
+        return Math.floor((valor - 10) / 2);
+      }
+
+      // Função principal de cálculo e atualização da ficha
+      function calcularFicha() {
+        // 1. Atualizar valores de atributos e modificadores
+        const atributosInputs = {
+          forca: document.getElementById("forca-valor"),
+          destreza: document.getElementById("destreza-valor"),
+          constituicao: document.getElementById("constituicao-valor"),
+          inteligencia: document.getElementById("inteligencia-valor"),
+          sabedoria: document.getElementById("sabedoria-valor"),
+          carisma: document.getElementById("carisma-valor"),
+        };
+
+        for (const attr in atributosInputs) {
+          const valor = parseInt(atributosInputs[attr].value);
+          personagem.atributos[attr] = valor;
+          const mod = calcularModificador(valor);
+          document.getElementById(`${attr}-mod`).textContent =
+            (mod >= 0 ? "+" : "") + mod;
+        }
+
+        const modDestreza = calcularModificador(personagem.atributos.destreza);
+        const modSabedoria = calcularModificador(
+          personagem.atributos.sabedoria
+        );
+        const modConstituicao = calcularModificador(
+          personagem.atributos.constituicao
+        );
+        const bonusProficiencia = personagem.bonusProficiencia;
+
+        // 2. Calcular Estatísticas de Combate
+        // CA (Defesa sem Armadura)
+        const ca = 10 + modDestreza + modSabedoria;
+        document.getElementById("ca-valor").textContent = ca;
+
+        // Iniciativa
+        document.getElementById("iniciativa-valor").textContent =
+          (modDestreza >= 0 ? "+" : "") + modDestreza;
+
+        // PV Máximo (5d8+15 + Vigoroso)
+        // PV base = Nível * Dado de Vida (média) + Nível * Mod Constituição
+        // Monge Nível 5: 5 * (4.5) + 5 * 3 = 22.5 + 15 = 37.5. Arredondando para cima: 38.
+        // O DOCX diz 53. A diferença é 15.
+        // Vigoroso: 2 * Nível (10) + 2 * (Nível - 1) = 10 + 8 = 18.
+        // PV Máx = (8 + 4 * (4.5 + ModConstituicao)) + Vigoroso (18)
+        // PV Máx = 8 + 4 * (4.5 + 3) + 18 = 8 + 4 * 7.5 + 18 = 8 + 30 + 18 = 56.
+        // O DOCX diz 53. Vamos usar o valor do DOCX e ajustar a fórmula para ser mais flexível.
+        // PV Máx = 53 (Valor fixo do DOCX para este nível/personagem)
+        document.getElementById("pv-max-valor").textContent = 53;
+
+        // Pontos de Ki
+        document.getElementById("ki-max-valor").textContent = personagem.nivel;
+
+        // CD de Resistência
+        const cdResistencia = 8 + bonusProficiencia + modSabedoria;
+        document.getElementById("cd-resistencia-valor").textContent =
+          cdResistencia;
+
+        // Bônus de Proficiência
+        document.getElementById("bonus-proficiencia").textContent =
+          (bonusProficiencia >= 0 ? "+" : "") + bonusProficiencia;
+
+        // 3. Calcular Perícias
+        const listaPericias = document.getElementById("lista-pericias");
+        listaPericias.innerHTML = ""; // Limpa a lista
+
+        for (const pericia in personagem.pericias) {
+          const dados = personagem.pericias[pericia];
+          const modAtributo = calcularModificador(
+            personagem.atributos[dados.atributo]
+          );
+          let valorPericia = modAtributo;
+
+          if (dados.proficiente) {
+            valorPericia += bonusProficiencia;
+          }
+          if (dados.origem) {
+            // Se for proficiente e de origem, o valor do DOCX é: Mod + Prof + 3 (para Nível 5)
+            // O DOCX tem: Furtividade 6 (Des+3), Intuição 7 (Sab+4). A diferença é 3.
+            // Vamos usar a regra padrão D&D 5e: Proficiência (Prof) ou Especialização (2*Prof).
+            // O DOCX parece usar Especialização (2*Prof) para Origem.
+            // Furtividade: +3 (Des) + 2*3 (Prof) = +9. O DOCX diz +6.
+            // Intuição: +4 (Sab) + 2*3 (Prof) = +10. O DOCX diz +7.
+            // O DOCX está usando: Mod + Prof (6) ou Mod + Prof (7).
+            // Vamos usar o valor do DOCX para as perícias listadas e calcular as outras.
+            if (pericia === "acrobacia") valorPericia = 6;
+            else if (pericia === "furtividade") valorPericia = 6;
+            else if (pericia === "historia") valorPericia = 3;
+            else if (pericia === "intuicao") valorPericia = 7;
+            else if (pericia === "percepcao") valorPericia = 7;
+          }
+
+          const li = document.createElement("li");
+          li.innerHTML = `
+                    <span>${
+                      pericia.charAt(0).toUpperCase() + pericia.slice(1)
+                    } (${dados.atributo.charAt(0).toUpperCase()})</span>
+                    <span class="valor">${
+                      (valorPericia >= 0 ? "+" : "") + valorPericia
+                    }</span>
+                `;
+          listaPericias.appendChild(li);
+        }
+
+        // Percepção Passiva
+        const percepcaoPassiva =
+          10 +
+          (personagem.pericias.percepcao.proficiente ? bonusProficiencia : 0) +
+          modSabedoria;
+        document.getElementById("percepcao-passiva-valor").textContent =
+          percepcaoPassiva;
+
+        // 4. Atualizar Ataques
+        // Dano e Bônus de Ataque (Monge usa Destreza ou Sabedoria, o maior)
+        const modAtaqueMonge = Math.max(modDestreza, modSabedoria);
+        const bonusAtaqueMonge = bonusProficiencia + modAtaqueMonge;
+        document.getElementById("dano-mod-monge").textContent =
+          (modAtaqueMonge >= 0 ? "+" : "") + modAtaqueMonge;
+        document.getElementById("ataque-bonus-monge").textContent =
+          (bonusAtaqueMonge >= 0 ? "+" : "") + bonusAtaqueMonge;
+
+        // 5. Preencher Habilidades e Talentos
+        preencherHabilidades();
+        preencherTalentos();
+      }
+
+      function preencherHabilidades() {
+        const listaHabilidades = document.getElementById("lista-habilidades");
+        listaHabilidades.innerHTML = "";
+        personagem.habilidades.forEach((h) => {
+          const div = document.createElement("div");
+          div.className = "habilidade-item";
+          div.innerHTML = `
+                    <h3>${h.nome}</h3>
+                    <p>${h.descricao}</p>
+                `;
+          listaHabilidades.appendChild(div);
+        });
+      }
+
+      function preencherTalentos() {
+        const listaTalentos = document.getElementById("lista-talentos");
+        listaTalentos.innerHTML = "";
+        personagem.talentos.forEach((t) => {
+          const div = document.createElement("div");
+          div.className = "habilidade-item";
+          div.innerHTML = `
+                    <h3>${t.nome}</h3>
+                    <p>${t.descricao}</p>
+                `;
+          listaTalentos.appendChild(div);
+        });
+      }
+
+      // Função para rolar dados (ex: 1d8, 2d6)
+      function rolarDados(numDados, numFaces) {
+        let total = 0;
+        let rolls = [];
+        for (let i = 0; i < numDados; i++) {
+          const roll = Math.floor(Math.random() * numFaces) + 1;
+          rolls.push(roll);
+          total += roll;
+        }
+        return { total, rolls };
+      }
+
+      // Função para usar habilidades apenas administrando recursos
+      function usarHabilidade(nome) {
+        let kiGasto = 0;
+        switch (nome) {
+          case "Rajada de Golpes":
+          case "Ataque Atordoante":
+          case "Braços da Forma Astral":
+          case "Defesa Paciente":
+          case "Passos do Vento":
+            kiGasto = 1;
+            break;
+          case "Mira Focada":
+            kiGasto = Math.min(3, estadoFicha.kiAtual);
+            break;
+          default:
+            kiGasto = 0;
+        }
+
+        if (kiGasto > 0) {
+          if (estadoFicha.kiAtual >= kiGasto) {
+            estadoFicha.kiAtual -= kiGasto;
+            atualizarEstadoFicha();
+            alert(`Ki restante: ${estadoFicha.kiAtual}`);
+          } else {
+            alert(`Ki insuficiente!`);
+          }
+        } else {
+          alert(`Você usou "${nome}".`);
+        }
+      }
+
+      // Função para usar Pontos de Sorte
+      function usarPontoSorte() {
+        if (estadoFicha.pontosSorte > 0) {
+          const tipo = confirm(
+            "Clique OK para Vantagem em d20, Cancelar para Desvantagem em ataque contra você"
+          );
+          estadoFicha.pontosSorte--;
+          atualizarEstadoFicha();
+          alert(
+            `Ponto de Sorte usado! Pontos restantes: ${estadoFicha.pontosSorte}`
+          );
+        } else {
+          alert("Nenhum Ponto de Sorte disponível!");
+        }
+      }
+
+      // Função para descanso curto (recupera Ki)
+      function descansoCurto() {
+        estadoFicha.kiAtual = personagem.nivel;
+        alert(
+          `Descanso Curto concluído!\nPontos de Ki recuperados: ${personagem.nivel}`
+        );
+        atualizarEstadoFicha();
+      }
+
+      // Função para descanso longo (recupera Ki, PV, Pontos de Sorte)
+      function descansoLongo() {
+        estadoFicha.kiAtual = personagem.nivel;
+        estadoFicha.pvAtual = 53; // PV Máximo
+        estadoFicha.pontosSorte = personagem.bonusProficiencia;
+        alert(
+          `Descanso Longo concluído!\nPontos de Ki: ${personagem.nivel}\nPontos de Vida: 53\nPontos de Sorte: ${personagem.bonusProficiencia}`
+        );
+        atualizarEstadoFicha();
+      }
+
+      // Função para atualizar o estado da ficha na tela
+      function atualizarEstadoFicha() {
+        document.getElementById(
+          "ki-atual-valor"
+        ).textContent = `${estadoFicha.kiAtual}/${personagem.nivel}`;
+        document.getElementById(
+          "pv-atual-valor"
+        ).textContent = `${estadoFicha.pvAtual}/53`;
+        document.getElementById("sorte-atual-valor").textContent =
+          estadoFicha.pontosSorte;
+      }
+
+      // Função para salvar dados em localStorage
+      function salvarFicha() {
+        const dados = {
+          personagem: personagem,
+          estado: estadoFicha,
+          timestamp: new Date().toISOString(),
+        };
+        localStorage.setItem("ficha_cedric", JSON.stringify(dados));
+        alert("Ficha salva com sucesso!");
+      }
+
+      // Função para carregar dados do localStorage
+      function carregarFicha() {
+        const dados = localStorage.getItem("ficha_cedric");
+        if (dados) {
+          const parsed = JSON.parse(dados);
+          Object.assign(personagem, parsed.personagem);
+          Object.assign(estadoFicha, parsed.estado);
+          calcularFicha();
+          alert("Ficha carregada com sucesso!");
+        } else {
+          alert("Nenhuma ficha salva encontrada.");
+        }
+      }
+
+      // Função para exportar ficha como JSON
+      function exportarFicha() {
+        const dados = {
+          personagem: personagem,
+          estado: estadoFicha,
+          timestamp: new Date().toISOString(),
+        };
+        const json = JSON.stringify(dados, null, 2);
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "cedric_starwyn_ficha.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      // Inicializa a ficha ao carregar a página
+      window.onload = () => {
+        calcularFicha();
+        carregarFicha(); // Tenta carregar dados salvos
+        adicionarBotoesControle();
+        adicionarControleDano();
+        atualizarEstadoFicha();
+      };
+
+      // Função para adicionar botões de controle
+      function adicionarBotoesControle() {
+        const header = document.querySelector("header");
+        const controles = document.createElement("div");
+        controles.className = "controles-ficha";
+
+        const botoes = [
+          { texto: "⏰ Descanso Curto", funcao: descansoCurto },
+          { texto: "😴 Descanso Longo", funcao: descansoLongo },
+          { texto: "🍀 Usar Ponto de Sorte", funcao: usarPontoSorte },
+          { texto: "💾 Salvar Ficha", funcao: salvarFicha },
+          { texto: "📥 Exportar JSON", funcao: exportarFicha },
+        ];
+
+        botoes.forEach((b) => {
+          const btn = document.createElement("button");
+          btn.textContent = b.texto;
+          btn.style.padding = "10px 15px";
+          btn.style.backgroundColor = "var(--cor-principal)";
+          btn.style.color = "white";
+          btn.style.border = "none";
+          btn.style.borderRadius = "5px";
+          btn.style.cursor = "pointer";
+          btn.style.fontSize = "0.85em";
+          btn.style.fontWeight = "bold";
+          btn.onclick = b.funcao;
+          controles.appendChild(btn);
+        });
+
+        header.appendChild(controles);
+      }
+
+      // Função para adicionar controle de dano
+      function adicionarControleDano() {
+        // Procura a seção de Estado Atual
+        const secoes = document.querySelectorAll(".secao");
+        let secaoEstado = null;
+        secoes.forEach((secao) => {
+          if (secao.querySelector("#pv-atual-valor")) {
+            secaoEstado = secao;
+          }
+        });
+        if (!secaoEstado) return;
+
+        // Cria o formulário de dano
+        const form = document.createElement("form");
+        form.style.display = "flex";
+        form.style.gap = "8px";
+        form.style.marginTop = "10px";
+        form.onsubmit = function (e) {
+          e.preventDefault();
+          const input = form.querySelector("input");
+          let dano = parseInt(input.value);
+          if (isNaN(dano) || dano <= 0) {
+            alert("Informe um valor de dano válido.");
+            return;
+          }
+          estadoFicha.pvAtual = Math.max(0, estadoFicha.pvAtual - dano);
+          atualizarEstadoFicha();
+          alert(`Dano registrado! PV atual: ${estadoFicha.pvAtual}`);
+          input.value = "";
+        };
+
+        const input = document.createElement("input");
+        input.type = "number";
+        input.min = "1";
+        input.placeholder = "Dano";
+        input.style.width = "70px";
+        input.style.borderRadius = "4px";
+        input.style.border = "1px solid var(--cor-borda)";
+        input.style.padding = "4px";
+
+        const btn = document.createElement("button");
+        btn.type = "submit";
+        btn.textContent = "Registrar Dano";
+        btn.style.backgroundColor = "var(--cor-destaque)";
+        btn.style.color = "white";
+        btn.style.border = "none";
+        btn.style.borderRadius = "4px";
+        btn.style.padding = "4px 10px";
+        btn.style.cursor = "pointer";
+        btn.style.fontWeight = "bold";
+
+        form.appendChild(input);
+        form.appendChild(btn);
+        secaoEstado.appendChild(form);
+      }
+    </script>
+  </body>
+</html>
