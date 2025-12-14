@@ -128,7 +128,7 @@
                 </div>
                 <div class="flex justify-between items-center border-b border-slate-700 pb-2">
                     <span class="text-slate-400 font-cinzel">Proficiência</span>
-                    <input type="text" id="profBonus" class="stat-input text-xl text-slate-200 w-12" value="+3">
+                    <span id="profBonus" class="stat-input text-xl text-slate-200 w-12 text-right pr-2">+3</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-slate-400 font-cinzel">CD de Ki (Sab)</span>
@@ -436,8 +436,20 @@ Inimigos: Família Starwyn (Aurix), Shampa.`,
             localStorage.setItem('charSheetData', JSON.stringify(data));
         }
 
+        function calculateProficiencyBonus(level) {
+            if (level < 5) return 2;
+            if (level < 9) return 3;
+            if (level < 13) return 4;
+            if (level < 17) return 5;
+            return 6;
+        }
+
         function loadSheet() {
             const data = getSheetData();
+            
+            // Auto-calculate proficiency bonus from level
+            const level = parseInt(data.charLevel, 10) || 1;
+            data.profBonus = `+${calculateProficiencyBonus(level)}`;
             
             // Simple value fields
             const simpleFields = ["charName", "charClass", "charLevel", "charRace", "initiative", "ac", "speed", "profBonus", "saveDc", "currentHp", "maxHp", "currentKi", "maxKi", "gp", "pp", "ep", "cp", "inventory", "notes", "otherProficiencies", "extraAttacks"];
@@ -468,17 +480,26 @@ Inimigos: Família Starwyn (Aurix), Shampa.`,
                 el.addEventListener('input', (e) => {
                     const data = getSheetData();
                     const id = e.target.id;
+                    let value = e.target.value ?? e.target.innerText;
+
+                    // This generic handler saves most top-level properties
                     if (id && data.hasOwnProperty(id)) {
-                        const value = e.target.value ?? e.target.innerText;
                         data[id] = value;
-                        saveSheetData(data);
                     }
-                     // Special case for contenteditable tables
+                    
+                    // Special case for contenteditable tables
                     if (e.currentTarget.id === 'attacksTable') {
                         data.attacksTable = e.currentTarget.innerHTML;
-                        saveSheetData(data);
                     }
-                    if (id && (id.includes('Hp') || id.includes('Ki'))) {
+                    
+                    saveSheetData(data);
+                    
+                    // If level changes, reload everything to update calculated values
+                    if (id === 'charLevel') {
+                        loadSheet();
+                    } 
+                    // For simple resource changes, just update the bars for responsiveness
+                    else if (id && (id.includes('Hp') || id.includes('Ki'))) {
                         updateBars();
                     }
                 });
@@ -588,7 +609,7 @@ Inimigos: Família Starwyn (Aurix), Shampa.`,
             const data = getSheetData();
             data[key] = parseInt(value, 10);
             saveSheetData(data);
-            renderAttributes(data); // Re-render to update modifier
+            loadSheet(); // Recalculate skills and other derived stats
         }
 
         function useAbility(index) {
